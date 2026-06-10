@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 L = 1
 hbar = 1
 m = 1
-N = 20
+N = 100
 h = L / (N + 1)
 
 H = np.zeros((N, N))
