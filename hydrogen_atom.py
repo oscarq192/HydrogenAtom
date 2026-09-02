@@ -1,16 +1,17 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+import pyvista as pv
 
 # Radial equation finite difference solver
-N = 10000
+N = 40000
 r_min = 1e-6
-r_max = 100
+r_max = 35
 h = (r_max - r_min) / (N + 1)
 
-n = 3
-l = 1
-m = 0
+n = 4
+l = 2
+m = 2
 n_r = n - l - 1     # Radial quantum number, specifying number of radial nodes
 
 r = np.linspace(r_min, r_max, N + 2)    # Radial indexes
@@ -44,18 +45,18 @@ total_angular_probability = np.sum(angular_probability)
 normalised_angular_probability = angular_probability / total_angular_probability
 angular_cdf = np.cumsum(normalised_angular_probability.ravel())
 
-points = 10000
+points = 100000
 
 # Monte Carlo rejection sampling
 
 # angular_prob_max = angular_probability.max()        # Denominator of fraction for probability
 # radial_prob_max = radial_probability.max()      # Denominator of fraction for rejection sampling
 
-# scatter_x = []
-# scatter_y = []
-# scatter_z = []
+# x = []
+# y = []
+# z = []
 
-# while len(scatter_x) < points:
+# while len(x) < points:
 #     radial_index = np.random.choice(len(r_i))
 #
 #     # Radial test
@@ -66,30 +67,48 @@ points = 10000
 #         azimuthal_idx = np.random.choice(len(azimuthal))
 #         if np.random.rand() < angular_probability[polar_idx][azimuthal_idx] / angular_prob_max:
 #             if abs(r_i[radial_index] * np.sin(polar[polar_idx]) * np.sin(azimuthal[azimuthal_idx])) < 1:
-#                 scatter_x.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.cos(azimuthal[azimuthal_idx]))
-#                 scatter_y.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.sin(azimuthal[azimuthal_idx]))
-#                 scatter_z.append(r_i[radial_index] * np.cos(polar[polar_idx]))
+#                 x.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.cos(azimuthal[azimuthal_idx]))
+#                 y.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.sin(azimuthal[azimuthal_idx]))
+#                 z.append(r_i[radial_index] * np.cos(polar[polar_idx]))
 
 # Distribution Sampling
 
 u_radial = np.random.rand(points)
 u_angular = np.random.rand(points)
 
-point_radii = np.searchsorted(radial_cdf, u_radial)
+point_radii = r_i[np.searchsorted(radial_cdf, u_radial)]
 angle_indices = np.searchsorted(angular_cdf, u_angular)
 point_thetas = theta.ravel()[angle_indices]
 point_phis = phi.ravel()[angle_indices]
 
-scatter_x = point_radii * np.sin(point_thetas) * np.cos(point_phis)
-scatter_y = point_radii * np.sin(point_thetas) * np.sin(point_phis)
-scatter_z = point_radii * np.cos(point_thetas)
+x = point_radii * np.sin(point_thetas) * np.cos(point_phis)
+y = point_radii * np.sin(point_thetas) * np.sin(point_phis)
+z = point_radii * np.cos(point_thetas)
 
-fig = plt.figure()
-ax = fig.add_subplot(projection='3d')
+# boolean_mask = abs(y) < 1
+# x = x[boolean_mask]
+# y = y[boolean_mask]
+# z = z[boolean_mask]
 
-ax.scatter(scatter_x, scatter_y, scatter_z, s=1)
-plt.axis("equal")
-plt.show()
+# Matplotlib rendering
+
+# fig = plt.figure()
+# ax = fig.add_subplot(projection='3d')
+
+# ax.scatter(x, y, z, s=1)
+# plt.axis("equal")
+# plt.show()
+
+# PyVista rendering
+
+colour_prob = np.abs(sp.special.sph_harm_y(l, m, point_thetas, point_phis)) ** 2
+# colour_prob = colour_prob[boolean_mask]
+
+scatter = np.column_stack((x, y, z))
+cloud = pv.PolyData(scatter)
+cloud["probability"] = colour_prob
+
+cloud.plot(scalars="probability", render_points_as_spheres=True, point_size=3, cmap="plasma")
 
 
 
