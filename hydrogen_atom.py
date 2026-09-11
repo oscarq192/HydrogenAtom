@@ -2,10 +2,10 @@ import sys
 
 import numpy as np
 import scipy as sp
-# import matplotlib.pyplot as plt
 import pyvista as pv
 from pyvistaqt import QtInteractor
 import PySide6.QtWidgets as qtw
+from PySide6.QtCore import Qt
 
 class QuantumCloud:
     def __init__(self, n=1, l=0, m=0, points=100000, N=10000, r_min=1e-6, r_max=35):
@@ -166,30 +166,59 @@ class MainWindow(qtw.QMainWindow):
         main_layout = qtw.QHBoxLayout()
         central_widget.setLayout(main_layout)
 
-        # Controls
+        # Controls and Labels
         controls_layout = qtw.QVBoxLayout()
         controls_widget = qtw.QWidget()
         controls_widget.setLayout(controls_layout)
 
+        controls_layout.setSpacing(10)
+        controls_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        n_layout = qtw.QVBoxLayout()
+        n_layout.setSpacing(0)
+        n_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.n_label = qtw.QLabel("Principal quantum number n:")
         self.n_spinbox = qtw.QSpinBox()
         self.n_spinbox.setRange(1, 4)
         self.n_spinbox.setSingleStep(1)
 
+        l_layout = qtw.QVBoxLayout()
+        l_layout.setSpacing(0)
+        l_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.l_label = qtw.QLabel("Angular quantum number l:")
         self.l_spinbox = qtw.QSpinBox()
         self.update_l_spinbox()
         self.l_spinbox.setSingleStep(1)
 
+        m_layout = qtw.QVBoxLayout()
+        m_layout.setSpacing(0)
+        m_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.m_label = qtw.QLabel("Magnetic quantum number m:")
         self.m_spinbox = qtw.QSpinBox()
         self.update_m_spinbox()
         self.m_spinbox.setSingleStep(1)
 
         self.mask_checkbox = qtw.QCheckBox("Show Cross-Section")
         self.cmap_dropdown = qtw.QComboBox()
-        self.colour_dropdown = qtw.QComboBox()
 
-        controls_layout.addWidget(self.n_spinbox)
-        controls_layout.addWidget(self.l_spinbox)
-        controls_layout.addWidget(self.m_spinbox)
+        self.colour_dropdown = qtw.QComboBox()
+        self.colour_dropdown.addItems(["Probability", "Phase"])
+
+        n_layout.addWidget(self.n_label)
+        n_layout.addWidget(self.n_spinbox)
+        controls_layout.addLayout(n_layout)
+
+        l_layout.addWidget(self.l_label)
+        l_layout.addWidget(self.l_spinbox)
+        controls_layout.addLayout(l_layout)
+
+        m_layout.addWidget(self.m_label)
+        m_layout.addWidget(self.m_spinbox)
+        controls_layout.addLayout(m_layout)
+
         controls_layout.addWidget(self.mask_checkbox)
         controls_layout.addWidget(self.cmap_dropdown)
         controls_layout.addWidget(self.colour_dropdown)
@@ -199,6 +228,9 @@ class MainWindow(qtw.QMainWindow):
         self.n_spinbox.valueChanged.connect(self.update_n)
         self.l_spinbox.valueChanged.connect(self.update_l)
         self.m_spinbox.valueChanged.connect(self.update_m)
+
+        self.mask_checkbox.stateChanged.connect(self.update_render)
+        self.colour_dropdown.currentIndexChanged.connect(self.update_render)
 
         # Render
 
@@ -242,8 +274,12 @@ class MainWindow(qtw.QMainWindow):
     def update_render(self):
         new_cloud_data = quantum.create_cloud(mask_enabled=self.mask_checkbox.isChecked())
         self.plotter.remove_actor(self.actor)
-        self.actor = self.plotter.add_mesh(new_cloud_data, scalars="Probability", render_points_as_spheres=True, point_size=3,
-                                           cmap="plasma")
+        self.actor = self.plotter.add_mesh(new_cloud_data,
+                                           scalars=self.colour_dropdown.currentText(),
+                                           render_points_as_spheres=True,
+                                           point_size=3,
+                                           cmap="plasma",
+                                           reset_camera=True)
 
         self.plotter.render()
 
@@ -261,38 +297,4 @@ if __name__ == "__main__":
     window = MainWindow()
     window.showMaximized()
     sys.exit(app.exec())
-
-
-# Monte Carlo rejection sampling
-
-# angular_prob_max = angular_probability.max()        # Denominator of fraction for probability
-# radial_prob_max = radial_probability.max()      # Denominator of fraction for rejection sampling
-
-# x = []
-# y = []
-# z = []
-
-# while len(x) < points:
-#     radial_index = np.random.choice(len(r_i))
-#
-#     # Radial test
-#     if np.random.rand() < radial_probability[radial_index] / radial_prob_max:
-#
-#         # Angular test
-#         polar_idx = np.random.choice(len(polar))
-#         azimuthal_idx = np.random.choice(len(azimuthal))
-#         if np.random.rand() < angular_probability[polar_idx][azimuthal_idx] / angular_prob_max:
-#             if abs(r_i[radial_index] * np.sin(polar[polar_idx]) * np.sin(azimuthal[azimuthal_idx])) < 1:
-#                 x.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.cos(azimuthal[azimuthal_idx]))
-#                 y.append(r_i[radial_index] * np.sin(polar[polar_idx]) * np.sin(azimuthal[azimuthal_idx]))
-#                 z.append(r_i[radial_index] * np.cos(polar[polar_idx]))
-
-# Matplotlib rendering
-
-# fig = plt.figure()
-# ax = fig.add_subplot(projection='3d')
-
-# ax.scatter(x, y, z, s=1)
-# plt.axis("equal")
-# plt.show()
 
