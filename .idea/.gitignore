@@ -3,3 +3,9 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+# build, dist and executables
+build/
+dist/
+*.exe
+*.spec
