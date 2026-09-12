@@ -9,3 +9,15 @@ build/
 dist/
 *.exe
 *.spec
+
+# build, dist and executables
+build/
+dist/
+*.exe
+*.spec
+
+# build, dist and executables
+build/
+dist/
+*.exe
+*.spec
