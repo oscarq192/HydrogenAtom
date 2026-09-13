@@ -11,7 +11,7 @@ See The_Hydrogen_Atom.pdf for LaTeX write up of notes. Where relevant, the appro
 
 ## Program
 
-Run using .exe file. Raw Python code visible in hydrogen_atom.py. Use the GUI on the left of the screen to change n, l, m, colour and cross-section toggle. Click and drag to pan, scroll to zoom.
+Run using .exe file. Raw Python code visible in hydrogen_atom.py. Use the GUI on the left of the screen to change n, l, m, colour and cross-section toggle. Click and drag to pan, scroll to zoom. Note that the colour shows probability density.
 
 ## Pictures
 
