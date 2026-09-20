@@ -202,7 +202,6 @@ class MainWindow(qtw.QMainWindow):
         self.m_spinbox.setSingleStep(1)
 
         self.mask_checkbox = qtw.QCheckBox("Show Cross-Section")
-        self.cmap_dropdown = qtw.QComboBox()
 
         self.colour_dropdown = qtw.QComboBox()
         self.colour_dropdown.addItems(["Probability", "Phase"])
@@ -220,7 +219,6 @@ class MainWindow(qtw.QMainWindow):
         controls_layout.addLayout(m_layout)
 
         controls_layout.addWidget(self.mask_checkbox)
-        controls_layout.addWidget(self.cmap_dropdown)
         controls_layout.addWidget(self.colour_dropdown)
 
         # Updates
