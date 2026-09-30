@@ -21,5 +21,5 @@ Some assorted screenshots, showing a mix of orbitals and cross-section toggle en
 ![3d](/pictures/3d.png)
 ![4s](/pictures/4s.png)
 ![4d](/pictures/4d.png)
-![Finite difference convergence of the energy eigenvalue](/pictures/finite_difference_convergence)
 ![4f](/pictures/4f.png)
+![Finite difference convergence of the energy eigenvalue](/pictures/finite_difference_convergence.png)
