@@ -62,7 +62,7 @@ class QuantumCloud:
         )
         R = vector / r_i
 
-        return r_i, R[:, 0]
+        return r_i, R[:, 0], values
 
     def calculate_radial_probability(self, r, R):
         radial_probability = np.abs(R) ** 2 * (r ** 2)
@@ -107,7 +107,7 @@ class QuantumCloud:
 
     # Update functions
     def update_radial(self):
-        self.r, self.R = self.solve_radial_equation()
+        self.r, self.R, _ = self.solve_radial_equation()
 
         self.radial_cdf = self.calculate_radial_probability(self.r, self.R)
 
