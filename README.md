@@ -13,7 +13,7 @@ Run using .exe file in the releases section. Raw Python code visible in hydrogen
 
 ## Pictures
 
-Some assorted screenshots, showing a mix of orbitals and cross-section toggle enabled or disabled.
+Some assorted screenshots, showing a mix of orbitals and cross-section toggle enabled or disabled. There is also a graph demonstrating the $O(n^2)$ error convergence when comparing the finite difference method used to the analytical value in atomic units. The code for this is visible in validation.py
 ![1s](/pictures/1s.png)
 ![2s](/pictures/2s.png)
 ![2p](/pictures/2p.png)
@@ -21,4 +21,5 @@ Some assorted screenshots, showing a mix of orbitals and cross-section toggle en
 ![3d](/pictures/3d.png)
 ![4s](/pictures/4s.png)
 ![4d](/pictures/4d.png)
+![Finite difference convergence of the energy eigenvalue](/pictures/finite_difference_convergence)
 ![4f](/pictures/4f.png)
